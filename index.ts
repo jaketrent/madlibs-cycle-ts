@@ -1,4 +1,4 @@
-import { makeDOMDriver, DOMSource, div, h2, textarea, VNode } from '@cycle/dom'
+import { makeDOMDriver, DOMSource, div, h2, label, input, textarea, VNode } from '@cycle/dom'
 import { run } from '@cycle/xstream-run'
 import xs, { Stream } from 'xstream'
 
@@ -38,7 +38,7 @@ function intent(DOMSource: DOMSource) {
     .select('.libInput')
     .events('keyup')
     .map((evt: Event) => evt.target.value)
-    .startWith([''])
+    .startWith([])
 
   return { story$, values$ }
 }
@@ -62,7 +62,12 @@ function view(state$: Stream<ViewState>): Stream<VNode> {
     return div([
       h2('MadLibs'),
       textarea('.story', state.story)
-    ])
+    ].concat(state.libs.map(lib => {
+      return label([
+        lib.label,
+        input('.libInput', { value: lib.value })
+      ])
+    })))
   })
 }
 
