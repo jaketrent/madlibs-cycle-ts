@@ -1,4 +1,4 @@
-import { makeDOMDriver, DOMSource, div, textarea, VNode } from '@cycle/dom'
+import { makeDOMDriver, DOMSource, div, h2, textarea, VNode } from '@cycle/dom'
 import { run } from '@cycle/xstream-run'
 import xs, { Stream } from 'xstream'
 
@@ -11,13 +11,19 @@ interface Drivers {
 interface Sinks {
   DOM: Stream<VNode>
 }
-interface ViewState {
-  story$: Stream<string>
-}
 interface Event {
   target: EventTarget
 }
 interface EventTarget {
+  value: string
+}
+interface ViewState {
+  story: string,
+  libs: Lib[]
+}
+interface Lib {
+  name: string,
+  label: string,
   value: string
 }
 
@@ -28,22 +34,41 @@ function intent(DOMSource: DOMSource) {
     .map((evt: Event) => evt.target.value)
     .startWith('')
 
-  return { story$ }
+  const values$ = DOMSource
+    .select('.libInput')
+    .events('keyup')
+    .map((evt: Event) => evt.target.value)
+    .startWith([''])
+
+  return { story$, values$ }
 }
 
-function model(story$: Stream<string>): ViewState {
-  return { story$ }
+function model(story$: Stream<string>, values$: Stream<string[]>): Stream<ViewState> {
+  return xs.combine(story$, values$)
+    .map(([story, values]) => {
+      const libs = values.map(value => {
+        return {
+          name: 'name',
+          label: 'label',
+          value
+        }
+      })
+      return { story, libs }
+    })
 }
 
-function view(state: ViewState): Stream<VNode> {
-  return state.story$.map(story =>
-    textarea('.story', story)
-  )
+function view(state$: Stream<ViewState>): Stream<VNode> {
+  return state$.map(state => {
+    return div([
+      h2('MadLibs'),
+      textarea('.story', state.story)
+    ])
+  })
 }
 
 function main(sources: Sources): Sinks {
-  const { story$ } = intent(sources.DOM)
-  const state$ = model(story$)
+  const { story$, values$ } = intent(sources.DOM)
+  const state$ = model(story$, values$)
   const vtree$ = view(state$)
   return {
     DOM: vtree$
