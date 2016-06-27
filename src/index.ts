@@ -46,6 +46,14 @@ function intent(DOMSource: DOMSource) {
 function model(story$: Stream<string>, values$: Stream<string[]>): Stream<ViewState> {
   return xs.combine(story$, values$)
     .map(([story, values]) => {
+
+
+      // TODO: /<\w+>/.exec and pull out those names
+      // const libNames = 
+
+
+
+
       const libs = values.map(value => {
         return {
           name: 'name',

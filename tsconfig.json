@@ -19,6 +19,6 @@
      "node_modules/@cycle/dom/lib/index.d.ts",
      "node_modules/@cycle/http/lib/index.d.ts",
      "typings/index.d.ts",
-     "index.ts"
+     "src/index.ts"
    ]
 }
