@@ -22,7 +22,8 @@ interface EventTarget {
 }
 interface ViewState {
   story: string,
-  libs: Lib[]
+  libs: Lib[],
+  output: string
 }
 // TODO: determine if exports/storage place is idiomatic ts
 export interface Lib {
@@ -64,33 +65,36 @@ function intent(DOMSource: DOMSource) {
 function model(story$: Stream<string>, values$: Stream<string[]>): Stream<ViewState> {
   return xs.combine(story$, values$)
     .map(([story, values]) => {
-      console.log('values', values)
       const libNames = libsUtil.extractNames(story)
-
       const libs = libNames.map((name, i) => {
         return {
           name,
-          label: name,
+          label: libsUtil.formatNameLabel(name),
           value: values[i]
         }
       })
-      // console.log('libs', libs)
 
-      return { story, libs }
+      const output = libsUtil.replaceLibs(story, libs)
+
+      return { story, libs, output }
     })
 }
 
 function view(state$: Stream<ViewState>): Stream<VNode> {
   return state$.map(state => {
-    return div([
-      h2('MadLibs'),
-      textarea('.story', state.story)
-    ].concat(state.libs.map((lib, i) => {
+    const libs = state.libs.map((lib, i) => {
       return label([
         lib.label,
         input('#libId' + i + '.libInput', { id: i, value: lib.value })
       ])
-    })))
+    })
+
+    return div([
+      h2('MadLibs'),
+      textarea('.story', state.story)
+    ].concat(libs).concat([
+      div(state.output)
+    ]))
   })
 }
 
