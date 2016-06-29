@@ -1,7 +1,7 @@
 {
-  "name": "madlibs-ts",
+  "name": "madlibs-cycle-ts",
   "version": "1.0.0",
-  "description": "madlibs in typescript, yo",
+  "description": "madlibs in cycle.js and typescript, yo",
   "private": true,
   "main": "index.js",
   "scripts": {
