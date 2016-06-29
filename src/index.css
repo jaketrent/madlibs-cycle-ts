@@ -1,0 +1,61 @@
+html, body {
+  font-family: sans-serif;
+  box-sizing: border-box;
+  background: linear-gradient(to bottom, #343434, #565656);
+  color: #fff;
+}
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.root {
+  width: 800px;
+  max-width: 100%;
+  min-height: 500px;
+}
+.title {
+  
+}
+.inputs {
+  display: flex
+}
+.story,
+.libInput {
+  flex: 1;
+  border: 0;
+  font-size: 16px;
+  width: 100%;
+  background: #97c4af;
+}
+.story {
+  padding: 15px;
+  height: 300px;
+}
+.libs {
+  flex: 1;   
+  padding-left: 20px;
+}
+.lib {
+  display: block;
+  margin-bottom: 15px;
+}
+.libLabel {
+  /* position:absolute; */
+  /* left: -10000px; */
+  /* top: auto; */
+  /* width: 1px; */
+  /* height: 1px; */
+  /* overflow: hidden; */
+}
+.libInput {
+  height: 30px;
+  padding: 0 15px;
+}
+.output {
+  font-size: 22px;
+  line-height: 1.2em;
+  margin-top: 35px;
+  border-top: 2px solid #fff;
+  padding-top: 25px;
+}

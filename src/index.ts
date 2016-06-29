@@ -1,9 +1,10 @@
-import { makeDOMDriver, DOMSource, div, h2, label, input, textarea, VNode } from '@cycle/dom'
+import { makeDOMDriver, DOMSource, div, span, h2, label, input, textarea, VNode } from '@cycle/dom'
 import flattenConcurrently from 'xstream/extra/flattenConcurrently'
 import { run } from '@cycle/xstream-run'
 import xs, { Stream } from 'xstream'
 
 import * as libsUtil from './libs.ts'
+import './index.css'
 
 interface Sources {
   DOM: DOMSource
@@ -42,7 +43,7 @@ function intent(DOMSource: DOMSource) {
     .select('.story')
     .events('keyup')
     .map((evt: Event) => evt.target.value)
-    .startWith('')
+    .startWith('This is a story with <here> and <therefore>.  Amazing are <we_here> now.')
 
   let values$ = DOMSource
     .select('.libInput')
@@ -83,18 +84,22 @@ function model(story$: Stream<string>, values$: Stream<string[]>): Stream<ViewSt
 function view(state$: Stream<ViewState>): Stream<VNode> {
   return state$.map(state => {
     const libs = state.libs.map((lib, i) => {
-      return label([
-        lib.label,
-        input('#libId' + i + '.libInput', { id: i, value: lib.value })
+      return label('.lib', [
+        span('.libLabel', lib.label),
+        input('#libId' + i + '.libInput', { value: lib.value })
       ])
     })
 
-    return div([
-      h2('MadLibs'),
-      textarea('.story', state.story)
-    ].concat(libs).concat([
-      div(state.output)
-    ]))
+    return div('.root', [
+      h2('.title', 'MadLibs'),
+      div('.inputs', [
+        textarea('.story', state.story),
+        div('.libs', libs),
+      ]),
+      div('.side', [
+        div('.output', state.output)
+      ])
+    ])
   })
 }
 

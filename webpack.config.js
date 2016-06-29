@@ -8,6 +8,7 @@ module.exports = {
   },
   module: {
     loaders: [
+      { test: /\.css$/, loaders: ['style', 'css'], exclude: /node_modules/ },
       { test: /\.(js|ts)$/, loaders: ['ts'], exclude: /node_modules/ }
     ]
   }
